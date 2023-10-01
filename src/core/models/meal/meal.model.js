@@ -11,7 +11,6 @@ const mealSchema = new mongoose.Schema(
       {
         date: {
           type: String,
-          required: true,
         },
         mealTaken: {
           type: Boolean,
@@ -19,7 +18,9 @@ const mealSchema = new mongoose.Schema(
         },
         bookedBy: {
           type: String,
-          required: true,
+        },
+        bookedByEmail: {
+          type: String,
         },
       },
     ],

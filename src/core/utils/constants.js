@@ -33,6 +33,7 @@ const BAD_REQUEST = "email, date & bookedBy, all are required";
 const MEAL_UPDATED = "Updated mealTaken to true";
 const NOTIFIED_MISSED_COUNT = "Notified missed count";
 const USER_UPDATED_SUCCESS = "User updated successfully";
+const BOOK_YOUR_FIRST_MEAL = "Book your first meal";
 
 export default {
   EMAIL_EXIST,
@@ -69,4 +70,5 @@ export default {
   MEAL_UPDATED,
   NOTIFIED_MISSED_COUNT,
   USER_UPDATED_SUCCESS,
+  BOOK_YOUR_FIRST_MEAL,
 };

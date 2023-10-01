@@ -19,6 +19,7 @@ const mealBookFucntion = async (email, date, bookedBy) => {
           {
             date: date,
             bookedBy: `${bookedByUser.firstName} ${bookedByUser.lastName}`,
+            bookedByEmail: bookedBy,
           },
         ],
       });
@@ -42,6 +43,7 @@ const mealBookFucntion = async (email, date, bookedBy) => {
         date: date,
         mealTaken: false,
         bookedBy: `${bookedByUser.firstName} ${bookedByUser.lastName}`,
+        bookedByEmail: bookedBy,
       });
     }
     await meal.save();
@@ -195,7 +197,15 @@ const getCountsOfUser = async (request, response) => {
     }
     const mealFound = await mealModel.mealModel.findOne({ email: user.email });
     if (!mealFound) {
-      return sendResponse(onError(400, messageResponse.INVALID_USER), response);
+      const newMealEntity = new mealModel.mealModel({
+        email,
+        bookedDates: [{}],
+      });
+      await newMealEntity.save();
+      return sendResponse(
+        onSuccess(200, messageResponse.BOOK_YOUR_FIRST_MEAL, newMealEntity),
+        response
+      );
     }
     return sendResponse(
       onSuccess(
