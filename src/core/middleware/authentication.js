@@ -9,6 +9,7 @@ const middleware = (app) => {
     } else {
       const verified = jwt.jwtVerify(token, config.SECRET);
       if (verified) {
+        request.user = verified;
         next();
       } else {
         return sendResponse(

@@ -34,6 +34,7 @@ const MEAL_UPDATED = "Updated mealTaken to true";
 const NOTIFIED_MISSED_COUNT = "Notified missed count";
 const USER_UPDATED_SUCCESS = "User updated successfully";
 const BOOK_YOUR_FIRST_MEAL = "Book your first meal";
+const MISSED_COUNTS_FETCHED = "Missed counts fetched successfully";
 
 export default {
   EMAIL_EXIST,
@@ -71,4 +72,5 @@ export default {
   NOTIFIED_MISSED_COUNT,
   USER_UPDATED_SUCCESS,
   BOOK_YOUR_FIRST_MEAL,
+  MISSED_COUNTS_FETCHED,
 };

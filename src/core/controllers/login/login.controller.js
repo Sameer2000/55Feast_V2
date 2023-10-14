@@ -18,7 +18,7 @@ const loginController = async (request, response) => {
     }
     const checker = bcrypt.compareSync(password, user["password"]);
     if (checker) {
-      const token = jwt.createToken(email, password);
+      const token = jwt.createToken(email, user.id);
       return sendResponse(
         onSuccess(200, messageResponse.LOGIN_SUCCESSFULLY, {
           token,

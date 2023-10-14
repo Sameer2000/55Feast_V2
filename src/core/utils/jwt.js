@@ -2,8 +2,8 @@ import jwt from "jsonwebtoken";
 import config from "../../../config";
 import messageResponse from "./constants.js";
 
-const createToken = (email, password) => {
-  const token = jwt.sign({ email, password }, config.SECRET, {
+const createToken = (email, userId) => {
+  const token = jwt.sign({ email, userId }, config.SECRET, {
     expiresIn: config.JWT_EXPIRY,
   });
   return token;

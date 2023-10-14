@@ -5,7 +5,13 @@ import {
   messageResponse,
   globalCatch,
 } from "../../utils";
-import { mealModel, missedCount, userModel, userPoolModel } from "../../models";
+import {
+  guestModel,
+  mealModel,
+  missedCount,
+  userModel,
+  userPoolModel,
+} from "../../models";
 
 //Done
 const mealBookFucntion = async (email, date, bookedBy) => {
@@ -459,6 +465,57 @@ const handleMissedCount = async (request, response) => {
   }
 };
 
+const getMissedCounts = async (request, response) => {
+  try {
+    const { date } = request.query;
+    let countsMissed = await missedCount.findOne({ date });
+    if (!countsMissed) {
+      countsMissed = new missedCount({
+        date,
+        users: [],
+      });
+      await countsMissed.save();
+    }
+    return sendResponse(
+      onSuccess(200, messageResponse.MISSED_COUNTS_FETCHED, countsMissed),
+      response
+    );
+  } catch (error) {
+    globalCatch(request, error);
+    return sendResponse(
+      onError(500, messageResponse.ERROR_FETCHING_DATA),
+      response
+    );
+  }
+};
+
+// const bookForGuest = async (request, response) => {
+//   try {
+//     const
+//     const {guestType} = request.body;
+//     if(guestType === 'employee'){
+//       const {email, dates} = request.body;
+//       const user = await guestModel.employeeGuestModel.findOne({email});
+//       if(user){
+//         user.bookedDates.push({
+//           date: date,
+//           mealTaken: false,
+//           bookedBy: `${bookedByUser.firstName} ${bookedByUser.lastName}`,
+//           bookedByEmail: bookedBy,
+//         });
+//       }
+//     }else if(guestType === 'nonEmployee'){
+//       const {count, dates} = request.body;
+//     }
+//   } catch (error) {
+//     globalCatch(request, error);
+//     return sendResponse(
+//       onError(500, messageResponse.ERROR_FETCHING_DATA),
+//       response
+//     );
+//   }
+// };
+
 export default {
   bookYourMeal,
   bookMultipleMeals,
@@ -471,4 +528,6 @@ export default {
   getMonthlyCounts,
   updateMealStatus,
   handleMissedCount,
+  getMissedCounts
+  // bookForGuest,
 };
