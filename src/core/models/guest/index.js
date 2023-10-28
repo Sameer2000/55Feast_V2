@@ -1,3 +1,3 @@
-import guestModel from "./guest.model.js";
+// import guestModel from "./guest.model.js";
 
-export default guestModel;
+export { default } from "./guest.model.js";

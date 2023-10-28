@@ -241,12 +241,36 @@ const getAllCountOfDate = async (request, response) => {
     const users = foundUsers.map(async (element) => {
       const foundUser = await userPoolModel.findOne({ email: element.email });
       return {
+        id: foundUser._id,
         fullName: foundUser.fullName,
         email: element.email,
         location: foundUser.location,
       };
     });
-    const result = await Promise.all(await users);
+    const foundGuests = await guestModel.find({
+      bookedDates: { $elemMatch: { date: date } },
+    });
+    const guests = foundGuests.map(async (element) => {
+      if (element.email === messageResponse.GUEST_EMAIL) {
+        return {
+          id: element._id,
+          fullName: messageResponse.GUEST_EMAIL,
+          email: messageResponse.GUEST_EMAIL,
+          location: element.location,
+        };
+      } else {
+        const foundUser = await userPoolModel.findOne({ email: element.email });
+        return {
+          id: element._id,
+          fullName: foundUser.fullName,
+          email: element.email,
+          location: element.location,
+        };
+      }
+    });
+    const res1 = await Promise.all(users);
+    const res2 = await Promise.all(guests);
+    const result = res1.concat(res2);
     const count = result.filter((user) => user.location === `${location}`);
     return sendResponse(
       onSuccess(200, messageResponse.DATE_FETCHED_SUCCESS, count),
@@ -315,7 +339,17 @@ const getCounts = async (date, location) => {
     const foundUser = await userPoolModel.findOne({ email: element.email });
     return { email: element.email, location: foundUser.location };
   });
-  const result = await Promise.all(await users);
+  const foundGuests = await guestModel.find({
+    bookedDates: { $elemMatch: { date: date } },
+  });
+  const guests = foundGuests.map((element) => {
+    return {
+      email: element.email,
+      location: element.location,
+    };
+  });
+  const res1 = await Promise.all(users);
+  const result = res1.concat(guests);
   const count = result.filter((user) => user.location === `${location}`);
   return count.length;
 };
@@ -489,32 +523,141 @@ const getMissedCounts = async (request, response) => {
   }
 };
 
-// const bookForGuest = async (request, response) => {
-//   try {
-//     const
-//     const {guestType} = request.body;
-//     if(guestType === 'employee'){
-//       const {email, dates} = request.body;
-//       const user = await guestModel.employeeGuestModel.findOne({email});
-//       if(user){
-//         user.bookedDates.push({
-//           date: date,
-//           mealTaken: false,
-//           bookedBy: `${bookedByUser.firstName} ${bookedByUser.lastName}`,
-//           bookedByEmail: bookedBy,
-//         });
-//       }
-//     }else if(guestType === 'nonEmployee'){
-//       const {count, dates} = request.body;
-//     }
-//   } catch (error) {
-//     globalCatch(request, error);
-//     return sendResponse(
-//       onError(500, messageResponse.ERROR_FETCHING_DATA),
-//       response
-//     );
-//   }
-// };
+const bookForGuest = async (request, response) => {
+  try {
+    const { guestType, location } = request.query;
+    const { email: bookedByEmail } = request.user;
+    const bookedByUser = await userModel.findOne({ email: bookedByEmail });
+    let guest;
+    if (guestType === "employee") {
+      const { email, dates } = request.body;
+      const employee = await userPoolModel.findOne({ email });
+      if (!employee) {
+        return sendResponse(
+          onError(404, messageResponse.EMPLOYEE_NOT_FOUND),
+          response
+        );
+      }
+      guest = await guestModel.findOne({ email, location });
+      if (guest) {
+        dates.map((date) => {
+          guest.bookedDates.push({
+            date: date,
+            bookedBy: `${bookedByUser.firstName} ${bookedByUser.lastName}`,
+            bookedByEmail,
+          });
+        });
+      } else {
+        const bookedDates = dates.map((date) => {
+          return {
+            date: date,
+            bookedBy: `${bookedByUser.firstName} ${bookedByUser.lastName}`,
+            bookedByEmail,
+          };
+        });
+        guest = new guestModel({
+          email,
+          location,
+          bookedDates,
+        });
+      }
+      await guest.save();
+    } else if (guestType === "nonEmployee") {
+      const { count, dates } = request.body;
+      const bookedDates = dates.map((date) => {
+        return {
+          date: date,
+          bookedBy: `${bookedByUser.firstName} ${bookedByUser.lastName}`,
+          bookedByEmail,
+        };
+      });
+      for (let i = 0; i < count; i++) {
+        guest = new guestModel({
+          email: messageResponse.GUEST_EMAIL,
+          location,
+          bookedDates,
+        });
+        await guest.save();
+      }
+    }
+    return sendResponse(
+      onSuccess(200, messageResponse.MEAL_BOOKED_FOR_GUESTS, guest),
+      response
+    );
+  } catch (error) {
+    globalCatch(request, error);
+    return sendResponse(
+      onError(500, messageResponse.ERROR_FETCHING_DATA),
+      response
+    );
+  }
+};
+
+const cancelGuestMeal = async (request, response) => {
+  try {
+    const { guestType, location } = request.query;
+    if (guestType === "employee") {
+      const { email, date } = request.body;
+      const employee = await userPoolModel.findOne({ email });
+      if (!employee) {
+        return sendResponse(
+          onError(404, messageResponse.EMPLOYEE_NOT_FOUND),
+          response
+        );
+      }
+      const mealFound = await guestModel.findOne({ email, location });
+      if (!mealFound) {
+        return sendResponse(
+          onError(404, messageResponse.MEAL_NOT_BOOKED),
+          response
+        );
+      }
+      if (mealFound.bookedDates.some((ele) => ele.date === date)) {
+        const index = mealFound.bookedDates.findIndex(
+          (item) => item.date === date
+        );
+        mealFound.bookedDates.splice(index, 1);
+        await mealFound.save();
+        return sendResponse(
+          onSuccess(200, messageResponse.COUNT_CANCELLED, mealFound),
+          response
+        );
+      }
+      return sendResponse(
+        onError(404, messageResponse.MEAL_NOT_BOOKED, mealFound),
+        response
+      );
+    } else if (guestType === "nonEmployee") {
+      const { guestId, date } = request.body;
+      const guest = await guestModel.findOne({ _id: guestId, location });
+      if (!guest) {
+        return sendResponse(
+          onError(404, messageResponse.GUEST_NOT_FOUND),
+          response
+        );
+      }
+      if (guest.bookedDates.some((ele) => ele.date === date)) {
+        const index = guest.bookedDates.findIndex((item) => item.date === date);
+        guest.bookedDates.splice(index, 1);
+        await guest.save();
+        return sendResponse(
+          onSuccess(200, messageResponse.COUNT_CANCELLED, guest),
+          response
+        );
+      }
+      return sendResponse(
+        onError(404, messageResponse.MEAL_NOT_BOOKED, guest),
+        response
+      );
+    }
+  } catch (error) {
+    globalCatch(request, error);
+    return sendResponse(
+      onError(500, messageResponse.ERROR_FETCHING_DATA),
+      response
+    );
+  }
+};
 
 export default {
   bookYourMeal,
@@ -528,6 +671,7 @@ export default {
   getMonthlyCounts,
   updateMealStatus,
   handleMissedCount,
-  getMissedCounts
-  // bookForGuest,
+  getMissedCounts,
+  bookForGuest,
+  cancelGuestMeal,
 };

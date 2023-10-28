@@ -35,6 +35,10 @@ const NOTIFIED_MISSED_COUNT = "Notified missed count";
 const USER_UPDATED_SUCCESS = "User updated successfully";
 const BOOK_YOUR_FIRST_MEAL = "Book your first meal";
 const MISSED_COUNTS_FETCHED = "Missed counts fetched successfully";
+const GUEST_EMAIL = "non-employee guest";
+const MEAL_BOOKED_FOR_GUESTS = "Meal booked for guests;";
+const EMPLOYEE_NOT_FOUND = "Employee not found";
+const GUEST_NOT_FOUND = "Guest not found";
 
 export default {
   EMAIL_EXIST,
@@ -73,4 +77,8 @@ export default {
   USER_UPDATED_SUCCESS,
   BOOK_YOUR_FIRST_MEAL,
   MISSED_COUNTS_FETCHED,
+  GUEST_EMAIL,
+  MEAL_BOOKED_FOR_GUESTS,
+  EMPLOYEE_NOT_FOUND,
+  GUEST_NOT_FOUND,
 };

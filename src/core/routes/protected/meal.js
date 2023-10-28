@@ -19,6 +19,7 @@ router.get(
 router.delete("/cancel", isAdmin(mealController.cancelAllMealsOfDate));
 router.post("/count-missed", mealController.handleMissedCount);
 router.get("/missed-counts", isAdmin(mealController.getMissedCounts));
-// router.post("/guest", isAdmin(mealController.bookForGuest));
+router.post("/guest", isAdmin(mealController.bookForGuest));
+router.delete("/cancel/guest", isAdmin(mealController.cancelGuestMeal));
 
 export default router;
