@@ -428,10 +428,10 @@ const getMonthlyCounts = async (request, response) => {
     for (let i = lastMonth.getDate(); i <= lastMonthEndDate.getDate(); i++) {
       const year = lastMonth.getFullYear();
       const month =
-        lastMonth.getMonth() + 1 < 9
+        lastMonth.getMonth() + 1 <= 9
           ? `0${lastMonth.getMonth() + 1}`
           : lastMonth.getMonth() + 1;
-      const day = i < 9 ? `0${i}` : i;
+      const day = i <= 9 ? `0${i}` : i;
       const formattedDate = `${year}-${month}-${day}`;
       const weekDay = new Date(formattedDate).getDay();
       if (weekDay !== 6 && weekDay !== 0) {
