@@ -7,6 +7,7 @@ import {
   messageResponse,
   globalCatch,
   jwt,
+  passwordUtils
 } from "../../utils";
 
 const loginController = async (request, response) => {
@@ -16,7 +17,7 @@ const loginController = async (request, response) => {
     if (!user) {
       return sendResponse(onError(404, messageResponse.NOT_EXIST), response);
     }
-    const checker = bcrypt.compareSync(password, user["password"]);
+    const checker = passwordUtils.validatePassword(user, password);
     if (checker) {
       const token = jwt.createToken(email, user.id);
       return sendResponse(

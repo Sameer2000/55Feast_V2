@@ -8,6 +8,7 @@ const EMAIL_API_KEY = process.env.EMAIL_API_KEY;
 const SENDER_EMAIL = process.env.SENDER_EMAIL;
 const PORT = process.env.PORT;
 const USERPOOL_MONGO_URI = process.env.USERPOOL_MONGO_URI;
+const RESET_PASSWORD_URL = process.env.RESET_PASSWORD_URL;
 
 export default {
   MONGO_URI,
@@ -17,4 +18,5 @@ export default {
   SENDER_EMAIL,
   PORT,
   USERPOOL_MONGO_URI,
+  RESET_PASSWORD_URL
 };

@@ -3,6 +3,8 @@ import messageResponse from "./constants.js";
 import { globalCatch } from "./globalCatch.js";
 import jwt from "./jwt.js";
 import isAdmin from "./roleManagement.js";
+import sendEmail from "./sendEmail.js";
+import passwordUtils from "./password.js";
 
 export {
   onError,
@@ -12,4 +14,6 @@ export {
   globalCatch,
   jwt,
   isAdmin,
+  sendEmail,
+  passwordUtils
 };

@@ -39,8 +39,19 @@ const GUEST_EMAIL = "non-employee guest";
 const MEAL_BOOKED_FOR_GUESTS = "Meal booked for guests;";
 const EMPLOYEE_NOT_FOUND = "Employee not found";
 const GUEST_NOT_FOUND = "Guest not found";
+const MAIL_SENT_SUCCESS = "Email sent successfully";
+const LINK_EXPIRED = "Link expired";
+const PASSWORD_RESET_SUCCESS = "Password reset successfull";
+const CORRECT_PASSWORD = "Correct password";
+const INVITE_SUBJECT = "Invitation to onboard 55Feast";
+const FORGOT_PASS_SUBJECT = "Reset password of 55Feast";
+const PASSWORD_UPDATED = "Password updated successfully";
 
 export default {
+  PASSWORD_UPDATED,
+  CORRECT_PASSWORD,
+  INVITE_SUBJECT,
+  FORGOT_PASS_SUBJECT,
   EMAIL_EXIST,
   CREATED_SUCCESS,
   ERROR_FETCHING_DATA,
@@ -81,4 +92,7 @@ export default {
   MEAL_BOOKED_FOR_GUESTS,
   EMPLOYEE_NOT_FOUND,
   GUEST_NOT_FOUND,
+  MAIL_SENT_SUCCESS,
+  PASSWORD_RESET_SUCCESS,
+  LINK_EXPIRED,
 };

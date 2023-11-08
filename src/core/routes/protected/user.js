@@ -11,5 +11,7 @@ router.patch("/update", isAdmin(userController.updateUserPool));
 router.delete("/delete", isAdmin(userController.deleteUser));
 router.post("/all/invite", isAdmin(userController.getNotJoinedUsers));
 router.post("/invite", isAdmin(userController.inviteUser));
+router.post("/check-password", userController.checkPassword);
+router.post("/reset-password", userController.resetPassword);
 
 export default router;
