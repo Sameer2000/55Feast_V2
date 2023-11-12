@@ -209,7 +209,7 @@ const forgotPassword = async (request, response) => {
   try {
     const user = await userModel.findOne({ email: request.body.email });
     if (!user)
-      return sendResponse(onError(500, messageResponse.NOT_EXIST), response);
+      return sendResponse(onError(404, messageResponse.NOT_EXIST), response);
 
     let token = await tokenModel.findOne({ userId: user._id });
     if (!token) {
@@ -218,7 +218,7 @@ const forgotPassword = async (request, response) => {
         token: crypto.randomBytes(32).toString("hex"),
       }).save();
     }
-    const link = `${config.RESET_PASSWORD_URL}/password-reset/${user._id}/${token.token}`;
+    const link = `${config.RESET_PASSWORD_URL}/${user._id}/${token.token}`;
     const res = await sendEmail(
       messageResponse.FORGOT_PASS_SUBJECT,
       user.firstName,
@@ -256,7 +256,10 @@ const updatePassword = async (request, response) => {
 
     const newHashedPassword = await passwordUtils.hashPassword(request.body.newPassword)
     const updatedUser = await userModel.findByIdAndUpdate(request.params.userId, {password: newHashedPassword}, { new: true })
-    await token.delete();
+    await tokenModel.findOneAndDelete({
+      userId: user._id,
+      token: request.params.token,
+    });
     return sendResponse(
       onSuccess(200, messageResponse.PASSWORD_RESET_SUCCESS, updatedUser),
       response
@@ -284,7 +287,7 @@ const checkPassword = async (request, response) => {
         response
       );
     }
-    return sendResponse(onError(500, messageResponse.INVALID_PASSWORD), response);
+    return sendResponse(onError(400, messageResponse.INVALID_PASSWORD), response);
   } catch (error) {
     globalCatch(request, error);
     return sendResponse(
