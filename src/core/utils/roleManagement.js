@@ -1,8 +1,8 @@
-import messageResponse from "./constants";
-import config from "../../../config";
-import { userModel } from "../models";
-import jwt from "./jwt";
-import { onError, sendResponse } from "./response";
+import messageResponse from "./constants.js";
+import config from "../../../config/index.js";
+import { userModel } from "../models/index.js";
+import jwt from "./jwt.js";
+import { onError, sendResponse } from "./response.js";
 
 const isAdmin = (func) => {
   return async (request, response) => {

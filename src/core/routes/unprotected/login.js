@@ -1,10 +1,10 @@
 import express from "express";
-import { loginController, userController } from "../../controllers";
+import { loginController, userController } from "../../controllers/index.js";
 
 const router = express.Router();
 
-router.post("/", loginController);
-router.post("/forgot-password", userController.forgotPassword);
-router.post("/update-password/:userId/:token", userController.updatePassword);
+router.post("/login/", loginController);
+router.post("/login/forgot-password", userController.forgotPassword);
+router.post("/login/update-password/:userId/:token", userController.updatePassword);
 
 export default router;

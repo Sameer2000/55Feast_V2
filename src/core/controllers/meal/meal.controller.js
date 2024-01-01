@@ -4,14 +4,14 @@ import {
   sendResponse,
   messageResponse,
   globalCatch,
-} from "../../utils";
+} from "../../utils/index.js";
 import {
   guestModel,
   mealModel,
   missedCount,
   userModel,
   userPoolModel,
-} from "../../models";
+} from "../../models/index.js";
 
 //Done
 const mealBookFucntion = async (email, date, bookedBy) => {
@@ -300,7 +300,7 @@ const getLastFiveCounts = async (request, response) => {
     }
     const lastFiveDayCounts = lastFiveDay.map(async (element) => {
       return {
-        count: await getCounts(element, location),
+        count: (await getCounts(element, location)).length,
         date: element,
         day: getDayByDate(element),
       };
@@ -351,7 +351,7 @@ const getCounts = async (date, location) => {
   const res1 = await Promise.all(users);
   const result = res1.concat(guests);
   const count = result.filter((user) => user.location === `${location}`);
-  return count.length;
+  return count;
 };
 
 //Done
@@ -440,7 +440,7 @@ const getMonthlyCounts = async (request, response) => {
     }
     const lastMonthCounts = datesOfLastMonth.map(async (element) => {
       const result = {
-        count: await getCounts(element, location),
+        count: (await getCounts(element, location)).length,
         date: element,
         day: getDayByDate(element),
       };
@@ -468,15 +468,17 @@ const getMonthlyCounts = async (request, response) => {
 //Done
 const handleMissedCount = async (request, response) => {
   try {
+    const { location } = request.query;
     const { date, email } = request.body;
     const user = await userModel.findOne({ email });
     if (!user) {
       return sendResponse(onError(400, messageResponse.INVALID_USER), response);
     }
-    let missedCountEntity = await missedCount.findOne({ date });
+    let missedCountEntity = await missedCount.findOne({ date, location });
     if (!missedCountEntity) {
       missedCountEntity = new missedCount({
         date,
+        location,
         users: [{ email, name: `${user.firstName} ${user.lastName}` }],
       });
     } else {
@@ -501,11 +503,14 @@ const handleMissedCount = async (request, response) => {
 
 const getMissedCounts = async (request, response) => {
   try {
-    const { date } = request.query;
-    let countsMissed = await missedCount.findOne({ date });
+    const { date, location } = request.query;
+    const foundMissedCount = await missedCount.findOne({ date, location });
+    const countOfDate = await getCounts(date, location);
+    let countsMissed = foundMissedCount?.users.filter(({ email }) => !countOfDate.find((obj) => obj.email === email));
     if (!countsMissed) {
       countsMissed = new missedCount({
         date,
+        location,
         users: [],
       });
       await countsMissed.save();

@@ -1,4 +1,4 @@
-import config from "../../../../config";
+import config from "../../../../config/index.js";
 import {
   onError,
   onSuccess,
@@ -8,8 +8,7 @@ import {
   sendEmail,
   passwordUtils,
 } from "../../utils/index.js";
-import SibApiV3Sdk from "sib-api-v3-sdk";
-import { userPoolModel, userModel, tokenModel } from "../../models";
+import { userPoolModel, userModel, tokenModel } from "../../models/index.js";
 import crypto from "crypto";
 
 //Done

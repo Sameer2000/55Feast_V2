@@ -4,8 +4,8 @@ import {
   sendResponse,
   messageResponse,
   globalCatch,
-} from "../../utils";
-import { menuModel } from "../../models";
+} from "../../utils/index.js";
+import { menuModel } from "../../models/index.js";
 
 const addMenuItem = async (request, response) => {
   try {

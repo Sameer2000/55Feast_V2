@@ -1,4 +1,4 @@
-import { userModel, userPoolModel } from "../../models";
+import { userModel, userPoolModel } from "../../models/index.js";
 import bcrypt from "bcryptjs";
 import {
   onError,
@@ -6,7 +6,7 @@ import {
   sendResponse,
   messageResponse,
   globalCatch,
-} from "../../utils";
+} from "../../utils/index.js";
 
 const signupController = async (request, response) => {
   try {

@@ -7,6 +7,10 @@ const missedCountSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    location: {
+      type: String,
+      required: true,
+    },
     users: [
       {
         email: {

@@ -1,5 +1,5 @@
 import SibApiV3Sdk from "sib-api-v3-sdk";
-import config from "../../../config";
+import config from "../../../config/index.js";
 
 const sendEmail = async (subject, name, email, templateId, params) => {
   try {

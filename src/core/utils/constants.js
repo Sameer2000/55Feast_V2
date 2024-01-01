@@ -46,8 +46,10 @@ const CORRECT_PASSWORD = "Correct password";
 const INVITE_SUBJECT = "Invitation to onboard 55Feast";
 const FORGOT_PASS_SUBJECT = "Reset password of 55Feast";
 const PASSWORD_UPDATED = "Password updated successfully";
+const PAGE_NOT_FOUND = "Page not found";
 
 export default {
+  PAGE_NOT_FOUND,
   PASSWORD_UPDATED,
   CORRECT_PASSWORD,
   INVITE_SUBJECT,

@@ -1,25 +1,25 @@
 import express from "express";
-import { mealController } from "../../controllers";
-import { isAdmin } from "../../utils";
+import { mealController } from "../../controllers/index.js";
+import { isAdmin } from "../../utils/index.js";
 
 const router = express.Router();
 
-router.post("/me", mealController.bookYourMeal);
-router.post("/multiple", mealController.bookMultipleMeals);
-router.patch("/update", mealController.updateMealStatus);
-router.delete("/me/delete", mealController.cancelMeal);
-router.get("/me/counts", mealController.getCountsOfUser);
-router.post("/date/count", isAdmin(mealController.getAllCountOfDate));
-router.get("/week/count", isAdmin(mealController.getLastFiveCounts));
-router.get("/month/count", isAdmin(mealController.getMonthlyCounts));
+router.post("/bookmeal/me", mealController.bookYourMeal);
+router.post("/bookmeal/multiple", mealController.bookMultipleMeals);
+router.patch("/bookmeal/update", mealController.updateMealStatus);
+router.delete("/bookmeal/me/delete", mealController.cancelMeal);
+router.get("/bookmeal/me/counts", mealController.getCountsOfUser);
+router.post("/bookmeal/date/count", isAdmin(mealController.getAllCountOfDate));
+router.get("/bookmeal/week/count", isAdmin(mealController.getLastFiveCounts));
+router.get("/bookmeal/month/count", isAdmin(mealController.getMonthlyCounts));
 router.get(
-  "/today/not_counted",
+  "/bookmeal/today/not_counted",
   isAdmin(mealController.getTodayNotCountedUsers)
 );
-router.delete("/cancel", isAdmin(mealController.cancelAllMealsOfDate));
-router.post("/count-missed", mealController.handleMissedCount);
-router.get("/missed-counts", isAdmin(mealController.getMissedCounts));
-router.post("/guest", isAdmin(mealController.bookForGuest));
-router.delete("/cancel/guest", isAdmin(mealController.cancelGuestMeal));
+router.delete("/bookmeal/cancel", isAdmin(mealController.cancelAllMealsOfDate));
+router.post("/bookmeal/count-missed", mealController.handleMissedCount);
+router.get("/bookmeal/missed-counts", isAdmin(mealController.getMissedCounts));
+router.post("/bookmeal/guest", isAdmin(mealController.bookForGuest));
+router.delete("/bookmeal/cancel/guest", isAdmin(mealController.cancelGuestMeal));
 
 export default router;
